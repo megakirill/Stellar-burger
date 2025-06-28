@@ -18,6 +18,8 @@
     "types": ["node", "jest"],
     "baseUrl": ".",
     "paths": {
+      "@services/*": ["src/services/*"],
+      "@utils/*": ["src/utils/*"],
       "@pages": ["src/pages"],
       "@components": ["src/components"],
       "@ui": ["src/components/ui"],
@@ -25,7 +27,7 @@
       "@utils-types": ["src/utils/types"],
       "@api": ["src/utils/burger-api.ts"],
       "@slices": ["src/services/slices"],
-      "@selectors": ["src/services/selectors"]
+      "@selectors": ["src/services/selectors"],
     }
   },
   "include": ["src"]

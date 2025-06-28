@@ -1,23 +1,23 @@
 import { FC, memo, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useAppSelector } from '@services/store';
+import { selectIngredients } from '@services/slices/ingredients';
+import { TIngredient } from '@utils-types';
 
 import { OrderCardProps } from './type';
-import { TIngredient } from '@utils-types';
 import { OrderCardUI } from '../ui/order-card';
 
 const maxIngredients = 6;
 
 export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
   const location = useLocation();
-
-  /** TODO: взять переменную из стора */
-  const ingredients: TIngredient[] = [];
+  const ingredients = useAppSelector(selectIngredients);
 
   const orderInfo = useMemo(() => {
     if (!ingredients.length) return null;
 
-    const ingredientsInfo = order.ingredients.reduce(
-      (acc: TIngredient[], item: string) => {
+    const ingredientsInfo = order.ingredients.reduce<TIngredient[]>(
+      (acc, item) => {
         const ingredient = ingredients.find((ing) => ing._id === item);
         if (ingredient) return [...acc, ingredient];
         return acc;
@@ -25,16 +25,14 @@ export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
       []
     );
 
-    const total = ingredientsInfo.reduce((acc, item) => acc + item.price, 0);
-
+    const total = ingredientsInfo.reduce(
+      (acc: number, item: TIngredient) => acc + item.price,
+      0
+    );
     const ingredientsToShow = ingredientsInfo.slice(0, maxIngredients);
-
-    const remains =
-      ingredientsInfo.length > maxIngredients
-        ? ingredientsInfo.length - maxIngredients
-        : 0;
-
+    const remains = Math.max(0, ingredientsInfo.length - maxIngredients);
     const date = new Date(order.createdAt);
+
     return {
       ...order,
       ingredientsInfo,
